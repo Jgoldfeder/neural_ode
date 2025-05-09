@@ -1,0 +1,11 @@
+dataset:
+  name: PDE_KS
+  # pair_id omitted or set to 'all' to run on all sub-datasets
+model:
+  name: neural_ode
+  method: no_normalize
+params:
+  lr: 0.001
+  hidden_dim: 512
+  batch_size: 40
+  seq_len: 40
