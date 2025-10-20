@@ -11,7 +11,7 @@ from neural_ode import NeuralOde
 
 def main(config_path: str) -> None:
     """
-    Main function to run the naive baseline model on specified sub-datasets.
+    Main function to run the neuralODE model on specified sub-datasets.
 
     Loads configuration, parses pair_ids, initializes the model, generates predictions,
     evaluates them, and saves results for each sub-dataset under a batch identifier.

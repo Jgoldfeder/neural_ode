@@ -23,22 +23,6 @@ class Normalizer:
             return y
         return y * self.std.to(y.device) + self.mean.to(y.device)
 
-
-# class ODEF(nn.Module):
-#     def __init__(self, hidden_dim=512, input_dim=3):
-#         super().__init__()
-#         self.net = nn.Sequential(
-#             nn.Linear(input_dim, hidden_dim),
-#             nn.Tanh(),
-#             nn.Linear(hidden_dim, hidden_dim*4),
-#             nn.Tanh(),
-#             nn.Linear(hidden_dim*4, hidden_dim),
-#             nn.Tanh(),
-#             nn.Linear(hidden_dim, input_dim),
-#         )
-
-#     def forward(self, t, y):
-#         return self.net(y)
 class ODEF(nn.Module):
     def __init__(self, hidden_dim=512, input_dim=3):
         super().__init__()
@@ -72,17 +56,17 @@ class NeuralOde:
         """
         self.method = config['model']['method']
         self.dataset_name = config['dataset']['name']
-        self.lr = float(config['params']['lr'])
-        self.hidden_size = int(config['params']['hidden_dim'])
-        self.batch_size = int(config['params']['batch_size'])
-        self.seq_len = int(config['params']['seq_len'])
+        self.lr = float(config['model']['lr'])
+        self.hidden_size = int(config['model']['hidden_dim'])
+        self.batch_size = int(config['model']['batch_size'])
+        self.seq_len = int(config['model']['seq_len'])
         self.pair_id = pair_id
         self.train_data = train_data
         self.init_data = init_data
         self.prediction_timesteps = torch.tensor(prediction_timesteps)
         self.training_timesteps = torch.tensor(training_timesteps)
         self.prediction_horizon_steps = len(prediction_timesteps)
-
+        self.num_epochs = int(config['model']['epochs'])
     def predict(self) -> np.ndarray:
         """
         Generate predictions based on the specified model method.
@@ -242,6 +226,6 @@ class NeuralOde:
 
         pred = train_neural_ode(
             t_train, y_train, t_eval, y_eval,
-            niters=100, lr=self.lr, batch_size=self.batch_size, seq_len=self.seq_len
+            niters=self.num_epochs, lr=self.lr, batch_size=self.batch_size, seq_len=self.seq_len
         )
         return pred

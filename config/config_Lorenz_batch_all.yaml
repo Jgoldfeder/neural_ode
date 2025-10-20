@@ -3,9 +3,9 @@ dataset:
 model:
   name: neural_ode
   method: normalize
-params:
   lr: 0.001
   hidden_dim: 512
   batch_size: 40
   seq_len: 40
+  epochs: 100
 

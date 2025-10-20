@@ -11,11 +11,10 @@ import numpy as np
 from ctf4science.data_module import load_dataset, get_prediction_timesteps, parse_pair_ids, get_applicable_plots
 from ctf4science.eval_module import evaluate, save_results
 from ctf4science.visualization_module import Visualization
-from naive_baselines import NaiveBaseline
+from neural_ode import NeuralOde
 
 file_dir = Path(__file__).parent
 
-# Update python PATH so that we can load run.py from CTF_NaiveBaselines directly
 sys.path.insert(0, str(file_dir))
 
 from run_opt import main as run_opt_main
@@ -129,7 +128,7 @@ def generate_config(config, template, name):
 
 def main(config_path: str, save_config: bool = True) -> None:
     """
-    Main function to generate configuration files and run the naive baseline
+    Main function to generate configuration files and run the
     model on specified sub-datasets for hyperparameter optimization.
 
     Loads configuration, generates specific config files, runs model on training

@@ -5,10 +5,10 @@ from pathlib import Path
 from typing import List, Dict, Any
 import datetime
 import numpy as np
-from ctf4science.data_module import load_dataset, load_validation_dataset, get_validation_prediction_timesteps, parse_pair_ids, get_applicable_plots
+from ctf4science.data_module import load_dataset, load_validation_dataset, get_validation_prediction_timesteps, parse_pair_ids, get_applicable_plots,get_training_timesteps
 from ctf4science.eval_module import evaluate_custom, save_results
 from ctf4science.visualization_module import Visualization
-from naive_baselines import NaiveBaseline
+from neural_ode import NeuralOde
 
 # Delete results directory - used for storing batch_results
 file_dir = Path(__file__).parent
@@ -21,7 +21,7 @@ file_dir = Path(__file__).parent
 
 def main(config_path: str) -> None:
     """
-    Main function to run the naive baseline model on specified sub-datasets.
+    Main function to run the neuralODE# model on specified sub-datasets.
 
     Loads configuration, parses pair_ids, initializes the model, generates predictions,
     evaluates them, and saves results for each sub-dataset under a batch identifier.
@@ -59,19 +59,13 @@ def main(config_path: str) -> None:
         train_data, val_data, init_data = load_validation_dataset(dataset_name, pair_id, train_split)
         prediction_timesteps = get_validation_prediction_timesteps(dataset_name, pair_id, train_split)
 
-        # Load initialization matrix if it exists
-        if init_data is None:
-            # Stack all training matrices to get a single training matrix
-            train_data = np.concatenate(train_data, axis=1)
-        else:
-            # If we are given a burn-in matrix, use it as the training matrix
-            train_data = init_data
-
+ 
         # Load metadata (to provide forecast length)
         prediction_horizon_steps = prediction_timesteps.shape[0]
+        training_timesteps = get_training_timesteps(dataset_name, pair_id)
 
         # Initialize the model with the config and train_data
-        model = NaiveBaseline(config, train_data, prediction_horizon_steps, pair_id)
+        model = NeuralOde(config, train_data, init_data, prediction_timesteps,training_timesteps, pair_id)
 
         # Generate predictions
         pred_data = model.predict()
